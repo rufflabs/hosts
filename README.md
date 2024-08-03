@@ -8,9 +8,27 @@ This script manages the `/etc/hosts` file, allowing you to add, delete, list, up
 > Do not rely solely on the backup feature of this script to restore the hosts file in emergencies. Always maintain an independent backup of the original file.
 > This script is designed to edit a specific section of the hosts file, but its behavior is not guaranteed.
 
+## Demo Environment
+
+To try out the script in an isolated environment without making changes to your system, you can use Docker. The following command sets up a demo environment where you can experiment with the script:
+
+```sh
+docker run -it --rm --hostname hosts-manager python:3.12-slim bash -c "apt-get update && apt-get install -y iputils-ping && pip install pipx && pipx install hosts-manager && pipx ensurepath && export PATH=\$PATH:/root/.local/bin && bash"
+```
+
+This command:
+- Creates a temporary container with Python 3.12-slim.
+- Installs `iputils-ping` to enable the ping feature.
+- Installs `pipx` and the `hosts-manager` package.
+- Adds the local bin directory to the PATH and opens a bash shell for you to interact with the script.
+
+![Demo Environment with hosts help](https://github.com/Friedjof/hosts/blob/main/media/hosts-help_demo-env.png)
+![Demo Environment with hosts list](https://github.com/Friedjof/hosts/blob/main/media/hosts-list_demo-env.png)
+![Demo Environment with hosts ping](https://github.com/Friedjof/hosts/blob/main/media/hosts-backup_demo-env.png)
+
 ## Installation
 
-Ensure Python 3.x is installed.
+Ensure Python >=3.12 is installed on your system. You can install the script using `pip`, `pipx`, or directly from the source code.
 
 ### Installing via GitHub
 

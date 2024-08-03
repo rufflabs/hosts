@@ -1,6 +1,6 @@
 [project]
 name = "hosts-manager"
-version = "0.2.6"
+version = "0.2.7"
 description = "A script to manage the /etc/hosts file."
 authors = [
     { name="Friedjof Noweck", email="git@noweck.info" }
