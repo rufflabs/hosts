@@ -1,0 +1,10 @@
+.venv
+
+build/
+dist/
+*.egg-info/
+.eggs/
+*.wheel
+
+.vscode/
+.idea/
