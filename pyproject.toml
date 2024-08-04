@@ -4,7 +4,7 @@ version = "0.2.8"
 description = "A script to manage the /etc/hosts file."
 authors = [
     { name="Friedjof Noweck", email="git@noweck.info" },
-    { name="Jason Taylor", email="" }
+    { name="Jason Taylor", email="jetaylor@gmail.com" }
 ]
 license = { text = "MIT" }
 readme = "README.md"
