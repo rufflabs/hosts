@@ -27,3 +27,10 @@ Tracker = "https://github.com/Friedjof/hosts/issues"
 
 [project.scripts]
 hosts = "hosts.main:main"
+
+[build-system]
+requires = ["setuptools>=72.1.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["hosts"]

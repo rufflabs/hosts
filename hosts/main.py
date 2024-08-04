@@ -518,6 +518,7 @@ class HostsFile:
         :param identifier: str (default: None)
         :param in_only_section: bool (default: False)
         :param sort_by: str (default: "ip")
+        :param ping: bool (default: False)
         :return: bool
         """
         entries = self._list_entries(in_only_section, identifier=identifier)
