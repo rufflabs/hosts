@@ -1,10 +1,10 @@
-#!/.venv/bin/python3
 import os
 import re
 import argparse
 import time
 from functools import reduce
 import subprocess
+import platform
 
 import validators as valid
 
@@ -16,9 +16,15 @@ class HostsFile:
     START_MARKER = "### BEGIN HOSTS MANAGED ENTRIES ###\n"
     END_MARKER = "### END HOSTS MANAGED ENTRIES ###\n"
 
-    HOST_FILE = "/etc/hosts"
-    BACKUP_DIR = "~/.local/share/hosts"
+    if platform.system() == "Windows":
+        HOST_FILE = r"C:\Windows\System32\drivers\etc\hosts"
+        BACKUP_DIR = os.path.expanduser(r"~\AppData\Local\hosts_backup")
+    else:
+        HOST_FILE = "/etc/hosts"
+        BACKUP_DIR = os.path.expanduser("~/.local/share/hosts")
+
     BACKUP_PATH = f"{BACKUP_DIR}/hosts-{{timestamp}}.bak"
+
     MAX_BACKUPS = 10
 
     def __init__(self, hosts_file_path: str = HOST_FILE):
@@ -36,15 +42,17 @@ class HostsFile:
     @staticmethod
     def _ip_is_reachable(ip: str) -> str:
         """
-        Check if the given ip is reachable
+        Check if the given IP is reachable
         :param ip: str (IPv4 or IPv6)
         :return: str
         """
         try:
-            if valid.ipv6(ip):
-                subprocess.check_output(["ping6", "-c", "1", "-W", "2", ip], stderr=subprocess.STDOUT)
+            if platform.system() == "Windows":
+                command = ["ping", "-n", "1", "-w", "2000", ip]
             else:
-                subprocess.check_output(["ping", "-c", "1", "-W", "2", ip], stderr=subprocess.STDOUT)
+                command = ["ping6" if valid.ipv6(ip) else "ping", "-c", "1", "-W", "2", ip]
+
+            subprocess.check_output(command, stderr=subprocess.STDOUT)
             return "ONLINE"
         except FileNotFoundError:
             return "UNKNOWN"
@@ -126,6 +134,13 @@ class HostsFile:
         Check if the hosts file exists and is readable
         :return: bool
         """
+        if platform.system() == "Windows":
+            try:
+                with open(self.hosts_file_path, 'r'):
+                    pass
+                return True
+            except IOError:
+                return False
         return os.path.exists(self.hosts_file_path) and os.access(self.hosts_file_path, os.R_OK)
 
     def _hosts_file_is_writable(self) -> bool:
@@ -133,7 +148,15 @@ class HostsFile:
         Check if the hosts file exists and is writable
         :return: bool
         """
-        return os.path.exists(self.hosts_file_path) and os.access(self.hosts_file_path, os.W_OK)
+        if platform.system() == "Windows":
+            try:
+                with open(self.hosts_file_path, 'a'):
+                    pass
+                return True
+            except IOError:
+                return False
+        else:
+            return os.path.exists(self.hosts_file_path) and os.access(self.hosts_file_path, os.W_OK)
 
     def _hosts_file_is_valid(self) -> bool:
         """
